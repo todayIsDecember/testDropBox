@@ -1,0 +1,8 @@
+.main {
+  min-height: 100vh;
+  background-color: var(--background);
+  display: grid;
+  justify-content: center;
+  align-items: start;
+  padding-top: 30px;
+}

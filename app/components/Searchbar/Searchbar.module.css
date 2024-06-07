@@ -1,0 +1,111 @@
+.searchbar {
+  position: relative;
+  padding: 10px 20px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  grid-template-columns:auto;
+  width: 50px;
+  box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.25);
+  transition: .5s ease;
+}
+
+.activeSearchbar {
+  width: 200px;
+  grid-template-columns: 1fr auto;
+}
+
+.input {
+  display: none;
+  background-color: transparent;
+  outline: none;
+  border: none;
+  width: 100%;
+  color: var(--text-color);
+}
+
+.input::placeholder {
+  color: var(--text-color);
+}
+
+.activeInput {
+  display: block;
+}
+
+.icon {
+  cursor: pointer;
+}
+
+.listContainer {
+  display: none;
+  width: 200px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  position: absolute;
+  top: 70px;
+  left: 0;
+  color: var(--text-color);
+  box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.25);
+}
+
+.activeListContainer {
+  display: grid;
+}
+
+.list {
+  list-style: none;
+  text-decoration: none;
+  padding: 10px;
+  display: grid;
+  align-content: start;
+  gap: 5px;
+  height: 300px;
+  overflow: scroll;
+}
+
+.buttonsContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 0px 10px;
+  padding: 10px 0px;
+  border-bottom: 1px solid var(--text-color);
+}
+
+.btn {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-color);
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  text-transform: uppercase;
+  align-items: center;
+}
+
+.starIcon {
+  fill: grey
+}
+
+.activeStarIcon {
+  fill: var(--text-color)
+}
+
+.listItem {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: 10px;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 8px;
+  transition: .3s ease;
+  align-self: baseline;
+}
+
+.listItem:hover {
+  background: rgba(0, 0, 0, 0.3);
+}

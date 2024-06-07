@@ -1,0 +1,15 @@
+.btn {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: grey;
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  text-transform: uppercase;
+  align-items: center;
+}
+
+.activeBtn {
+  color: var(--text-color)
+}
