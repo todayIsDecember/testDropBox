@@ -2,7 +2,7 @@
   background: transparent;
   border: none;
   outline: none;
-  color: grey;
+  color: var(--grey);
   cursor: pointer;
   display: grid;
   grid-template-columns: auto 1fr;

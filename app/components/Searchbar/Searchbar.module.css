@@ -40,6 +40,7 @@
 
 .listContainer {
   display: none;
+  backdrop-filter: blur(10px);
   width: 200px;
   border-radius: 8px;
   background: rgba(0, 0, 0, 0.2);
@@ -87,7 +88,7 @@
 }
 
 .starIcon {
-  fill: grey
+  fill: var(--grey)
 }
 
 .activeStarIcon {
