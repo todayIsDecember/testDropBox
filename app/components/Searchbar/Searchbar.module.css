@@ -104,3 +104,8 @@
 .listItem:hover {
   background: rgba(0, 0, 0, 0.3);
 }
+
+.emptyList {
+  padding: 10px;
+  color: var(--grey);
+}

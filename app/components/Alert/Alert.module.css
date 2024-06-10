@@ -1,0 +1,20 @@
+.alert {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  padding: 20px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  transition: .3s ease;
+  box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.25);
+}
+
+.textAlert {
+  color: var(--text-color);
+  font-size: 16px;
+  text-align: center;
+  font-weight: 500;
+  line-height: 1.5;
+  margin: 0;
+}

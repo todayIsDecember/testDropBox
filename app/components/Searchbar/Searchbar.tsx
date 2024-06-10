@@ -9,6 +9,7 @@ import cn from 'classnames';
 import { useEffect, useState, useRef } from "react";
 import { Button } from "../Button/Button";
 import { createPortal } from "react-dom";
+import { Alert } from "..";
 
 export const SearchBar = ({ coins, onSearch, className, ...props }: SearchbarProps): JSX.Element => {
   const [isActive, setIsActive] = useState<boolean>(false);
@@ -19,6 +20,9 @@ export const SearchBar = ({ coins, onSearch, className, ...props }: SearchbarPro
   const [favourites, setFavourites] = useState<{ [key: string]: boolean }>({});
   const searchBarRef = useRef<HTMLLabelElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [status, setStatus] = useState<string>('');
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [selectedCoin, setSelectedCoin] = useState<string>('');
 
   useEffect(() => {
     setIsClient(true);
@@ -35,6 +39,18 @@ export const SearchBar = ({ coins, onSearch, className, ...props }: SearchbarPro
       ...prevFavourites,
       [coin]: !prevFavourites[coin]
     }));
+
+    if (favourites[coin]) {
+      setStatus('removed');
+      setShowAlert(true);
+      setTimeout(() => setShowAlert(false), 2000);
+      setSelectedCoin(coin);
+    } else {
+      setStatus('added');
+      setShowAlert(true);
+      setTimeout(() => setShowAlert(false), 2000);
+      setSelectedCoin(coin);
+    }
   };
 
   useEffect(() => {
@@ -74,12 +90,12 @@ export const SearchBar = ({ coins, onSearch, className, ...props }: SearchbarPro
         <Button isActive={activeBtn === 'all coins'} onClick={() => setActiveBtn('all coins')}>all coins</Button>
       </div>
       <ul className={cn(styles.list)}>
-        {displayedList.map((coin) => (
+        {displayedList.length > 0 ? displayedList.map((coin) => (
           <li key={coin} className={styles.listItem} onClick={() => toggleFavourite(coin)}>
             {favourites[coin] ? <StarFilledIcon /> : <StarIcon />}
             {coin}
           </li>
-        ))}
+        )): <li className={styles.emptyList}>no such coin found</li>}
       </ul>
     </div>
   );
@@ -98,6 +114,7 @@ export const SearchBar = ({ coins, onSearch, className, ...props }: SearchbarPro
       />
       <SearchIcon className={styles.icon} onClick={onClickHandler} />
       {isActive && dropdownRoot && createPortal(dropdownContent, dropdownRoot)}
+      {showAlert && <Alert coin={selectedCoin} status={status}/>}
     </label>
   );
 };
