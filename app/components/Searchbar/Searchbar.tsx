@@ -40,17 +40,10 @@ export const SearchBar = ({ coins, onSearch, className, ...props }: SearchbarPro
       [coin]: !prevFavourites[coin]
     }));
 
-    if (favourites[coin]) {
-      setStatus('removed');
-      setShowAlert(true);
-      setTimeout(() => setShowAlert(false), 2000);
-      setSelectedCoin(coin);
-    } else {
-      setStatus('added');
-      setShowAlert(true);
-      setTimeout(() => setShowAlert(false), 2000);
-      setSelectedCoin(coin);
-    }
+    setStatus(favourites[coin] ? 'removed' : 'added');
+    setShowAlert(true);
+    setTimeout(() => setShowAlert(false), 2000);
+    setSelectedCoin(coin);
   };
 
   useEffect(() => {
@@ -101,6 +94,7 @@ export const SearchBar = ({ coins, onSearch, className, ...props }: SearchbarPro
   );
 
   const dropdownRoot = isClient ? document.getElementById('dropdown-root') : null;
+  const AlertRoot = isClient ? document.getElementById('alert-root') : null;
 
   return (
     <label ref={searchBarRef} className={cn(className, styles.searchbar, { [styles.activeSearchbar]: isActive })}>
@@ -114,7 +108,7 @@ export const SearchBar = ({ coins, onSearch, className, ...props }: SearchbarPro
       />
       <SearchIcon className={styles.icon} onClick={onClickHandler} />
       {isActive && dropdownRoot && createPortal(dropdownContent, dropdownRoot)}
-      {showAlert && <Alert coin={selectedCoin} status={status}/>}
+      {showAlert && AlertRoot && createPortal(<Alert coin={selectedCoin} status={status}></Alert>, AlertRoot)}
     </label>
   );
 };
