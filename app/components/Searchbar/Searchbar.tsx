@@ -92,7 +92,7 @@ export const SearchBar = ({ coins, onSearch, className, ...props }: SearchbarPro
         <Button isActive={activeBtn === 'all coins'} onClick={() => setActiveBtn('all coins')}>all coins</Button>
       </div>
       <div className={styles.list}>
-        <AutoSizer>
+        {displayedList.length > 0 ? <AutoSizer>
           {
             ({ width, height }) => (
               <List
@@ -104,16 +104,8 @@ export const SearchBar = ({ coins, onSearch, className, ...props }: SearchbarPro
               />
             )
           }
-        </AutoSizer>
+        </AutoSizer>: <div className={styles.emptyList}>no such coin found</div>}
       </div>
-      {/* <ul className={cn(styles.list)}>
-        {displayedList.length > 0 ? displayedList.map((coin) => (
-          <li key={coin} className={styles.listItem} onClick={() => toggleFavourite(coin)}>
-            {favourites[coin] ? <StarFilledIcon /> : <StarIcon />}
-            {coin}
-          </li>
-        )): <li className={styles.emptyList}>no such coin found</li>}
-      </ul> */}
     </div>
   );
 
