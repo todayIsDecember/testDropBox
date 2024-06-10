@@ -18,7 +18,6 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         {children}
-        <div id="dropdown-root"></div>
         <div id="alert-root"></div>
         </body>
     </html>

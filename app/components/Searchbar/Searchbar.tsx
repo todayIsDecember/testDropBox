@@ -10,6 +10,7 @@ import { useEffect, useState, useRef } from "react";
 import { Button } from "../Button/Button";
 import { createPortal } from "react-dom";
 import { Alert } from "..";
+import { List, AutoSizer } from 'react-virtualized'
 
 export const SearchBar = ({ coins, onSearch, className, ...props }: SearchbarProps): JSX.Element => {
   const [isActive, setIsActive] = useState<boolean>(false);
@@ -69,10 +70,18 @@ export const SearchBar = ({ coins, onSearch, className, ...props }: SearchbarPro
   }, [searchBarRef, dropdownRef]);
 
   const displayedList = activeBtn === 'all coins'
-    ? filteredList.slice(0, 20)
+    ? filteredList
     : Object.keys(favourites).filter((coin) => favourites[coin])
-        .filter((coin) => coin.toLowerCase().includes(value.toLowerCase()))
-        .slice(0, 20);
+        .filter((coin) => coin.toLowerCase().includes(value.toLowerCase()));
+
+  const renderList = ({ index, key, style }) => {
+    return (
+      <div className={styles.listItem} key={key} style={style} onClick={() => toggleFavourite(displayedList[index])}>
+        {favourites[displayedList[index]] ? <StarFilledIcon /> : <StarIcon />}
+            {displayedList[index]}
+      </div>
+    )
+  }
 
   const dropdownContent = (
     <div className={cn(styles.listContainer, { [styles.activeListContainer]: isActive })} ref={dropdownRef}>
@@ -82,22 +91,38 @@ export const SearchBar = ({ coins, onSearch, className, ...props }: SearchbarPro
         </Button>
         <Button isActive={activeBtn === 'all coins'} onClick={() => setActiveBtn('all coins')}>all coins</Button>
       </div>
-      <ul className={cn(styles.list)}>
+      <div className={styles.list}>
+        <AutoSizer>
+          {
+            ({ width, height }) => (
+              <List
+                width={width}
+                height={height}
+                rowCount={displayedList.length}
+                rowHeight={40}
+                rowRenderer={renderList}
+              />
+            )
+          }
+        </AutoSizer>
+      </div>
+      {/* <ul className={cn(styles.list)}>
         {displayedList.length > 0 ? displayedList.map((coin) => (
           <li key={coin} className={styles.listItem} onClick={() => toggleFavourite(coin)}>
             {favourites[coin] ? <StarFilledIcon /> : <StarIcon />}
             {coin}
           </li>
         )): <li className={styles.emptyList}>no such coin found</li>}
-      </ul>
+      </ul> */}
     </div>
   );
 
-  const dropdownRoot = isClient ? document.getElementById('dropdown-root') : null;
+
+  const dropdownRoot = isClient ? document.getElementById('searchbar') : null;
   const AlertRoot = isClient ? document.getElementById('alert-root') : null;
 
   return (
-    <label ref={searchBarRef} className={cn(className, styles.searchbar, { [styles.activeSearchbar]: isActive })}>
+    <label ref={searchBarRef} id="searchbar" className={cn(className, styles.searchbar, { [styles.activeSearchbar]: isActive })}>
       <input
         type="text"
         className={cn(styles.input, { [styles.activeInput]: isActive })}
