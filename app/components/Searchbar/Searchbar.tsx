@@ -35,7 +35,9 @@ export const SearchBar = ({ coins, onSearch, className, ...props }: SearchbarPro
     setValue('');
   };
 
-  const toggleFavourite = (coin: string) => {
+  const toggleFavourite = (coin: string, e) => {
+    e.stopPropagation();
+    e.preventDefault();
     setFavourites(prevFavourites => ({
       ...prevFavourites,
       [coin]: !prevFavourites[coin]
@@ -43,7 +45,7 @@ export const SearchBar = ({ coins, onSearch, className, ...props }: SearchbarPro
 
     setStatus(favourites[coin] ? 'removed' : 'added');
     setShowAlert(true);
-    setTimeout(() => setShowAlert(false), 2000);
+    setTimeout(() => setShowAlert(false), 1000);
     setSelectedCoin(coin);
   };
 
@@ -76,7 +78,7 @@ export const SearchBar = ({ coins, onSearch, className, ...props }: SearchbarPro
 
   const renderList = ({ index, key, style }) => {
     return (
-      <div className={styles.listItem} key={key} style={style} onClick={() => toggleFavourite(displayedList[index])}>
+      <div className={styles.listItem} key={key} style={style} onClick={(e) => toggleFavourite(displayedList[index], e)}>
         {favourites[displayedList[index]] ? <StarFilledIcon /> : <StarIcon />}
             {displayedList[index]}
       </div>
