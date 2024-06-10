@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { SearchbarProps } from "./SearchbarProps";
 import SearchIcon from '../../../public/icons/search.svg';
@@ -12,12 +12,17 @@ import { createPortal } from "react-dom";
 
 export const SearchBar = ({ coins, onSearch, className, ...props }: SearchbarProps): JSX.Element => {
   const [isActive, setIsActive] = useState<boolean>(false);
+  const [isClient, setIsClient] = useState<boolean>(false);
   const [value, setValue] = useState<string>('');
   const [filteredList, setFilteredList] = useState<string[]>(coins);
   const [activeBtn, setActiveBtn] = useState<string>('all coins');
   const [favourites, setFavourites] = useState<{ [key: string]: boolean }>({});
   const searchBarRef = useRef<HTMLLabelElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const onClickHandler = (e) => {
     e.preventDefault();
@@ -61,17 +66,17 @@ export const SearchBar = ({ coins, onSearch, className, ...props }: SearchbarPro
         .slice(0, 20);
 
   const dropdownContent = (
-    <div className={cn(styles.listContainer, {[styles.activeListContainer]: isActive})} ref={dropdownRef}>
+    <div className={cn(styles.listContainer, { [styles.activeListContainer]: isActive })} ref={dropdownRef}>
       <div className={styles.buttonsContainer}>
         <Button isActive={activeBtn === 'favourite'} onClick={() => setActiveBtn('favourite')}>
-          <StarFilledIcon className={cn(styles.starIcon, {[styles.activeStarIcon]: activeBtn === 'favourite'})}/>favourite
+          <StarFilledIcon className={cn(styles.starIcon, { [styles.activeStarIcon]: activeBtn === 'favourite' })} />favourite
         </Button>
         <Button isActive={activeBtn === 'all coins'} onClick={() => setActiveBtn('all coins')}>all coins</Button>
       </div>
       <ul className={cn(styles.list)}>
         {displayedList.map((coin) => (
           <li key={coin} className={styles.listItem} onClick={() => toggleFavourite(coin)}>
-            {favourites[coin] ? <StarFilledIcon/> : <StarIcon/>}
+            {favourites[coin] ? <StarFilledIcon /> : <StarIcon />}
             {coin}
           </li>
         ))}
@@ -79,20 +84,19 @@ export const SearchBar = ({ coins, onSearch, className, ...props }: SearchbarPro
     </div>
   );
 
-  const dropdownRoot = document.getElementById('dropdown-root');
-
+  const dropdownRoot = isClient ? document.getElementById('dropdown-root') : null;
 
   return (
-    <label ref={searchBarRef} className={cn(className, styles.searchbar, {[styles.activeSearchbar]: isActive})}>
+    <label ref={searchBarRef} className={cn(className, styles.searchbar, { [styles.activeSearchbar]: isActive })}>
       <input
         type="text"
-        className={cn(styles.input, {[styles.activeInput]: isActive})}
+        className={cn(styles.input, { [styles.activeInput]: isActive })}
         placeholder="Search..."
         onChange={(e) => setValue(e.target.value)}
         value={value}
         {...props}
       />
-      <SearchIcon className={styles.icon} onClick={onClickHandler}/>
+      <SearchIcon className={styles.icon} onClick={onClickHandler} />
       {isActive && dropdownRoot && createPortal(dropdownContent, dropdownRoot)}
     </label>
   );

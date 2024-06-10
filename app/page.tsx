@@ -1,4 +1,3 @@
-import Image from "next/image";
 import styles from "./page.module.css";
 import { getCoins } from "../API/getCoins";
 import { SearchBar } from "./components";
