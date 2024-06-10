@@ -8,14 +8,16 @@ import styles from './Searchbar.module.css';
 import cn from 'classnames';
 import { useEffect, useState, useRef } from "react";
 import { Button } from "../Button/Button";
+import { createPortal } from "react-dom";
 
-export const SearchBar = ({coins, onSearch, className, ...props}: SearchbarProps): JSX.Element => {
+export const SearchBar = ({ coins, onSearch, className, ...props }: SearchbarProps): JSX.Element => {
   const [isActive, setIsActive] = useState<boolean>(false);
   const [value, setValue] = useState<string>('');
   const [filteredList, setFilteredList] = useState<string[]>(coins);
   const [activeBtn, setActiveBtn] = useState<string>('all coins');
   const [favourites, setFavourites] = useState<{ [key: string]: boolean }>({});
   const searchBarRef = useRef<HTMLLabelElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const onClickHandler = (e) => {
     e.preventDefault();
@@ -40,7 +42,8 @@ export const SearchBar = ({coins, onSearch, className, ...props}: SearchbarProps
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (searchBarRef.current && !searchBarRef.current.contains(event.target)) {
+      if (searchBarRef.current && !searchBarRef.current.contains(event.target) &&
+          dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsActive(false);
         setValue('');
       }
@@ -49,9 +52,35 @@ export const SearchBar = ({coins, onSearch, className, ...props}: SearchbarProps
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [searchBarRef]);
+  }, [searchBarRef, dropdownRef]);
 
-  const displayedList = activeBtn === 'all coins' ? filteredList.slice(0, 20) : Object.keys(favourites).filter((coin) => favourites[coin]).filter((coin) => coin.toLowerCase().includes(value.toLowerCase())).slice(0, 20);
+  const displayedList = activeBtn === 'all coins'
+    ? filteredList.slice(0, 20)
+    : Object.keys(favourites).filter((coin) => favourites[coin])
+        .filter((coin) => coin.toLowerCase().includes(value.toLowerCase()))
+        .slice(0, 20);
+
+  const dropdownContent = (
+    <div className={cn(styles.listContainer, {[styles.activeListContainer]: isActive})} ref={dropdownRef}>
+      <div className={styles.buttonsContainer}>
+        <Button isActive={activeBtn === 'favourite'} onClick={() => setActiveBtn('favourite')}>
+          <StarFilledIcon className={cn(styles.starIcon, {[styles.activeStarIcon]: activeBtn === 'favourite'})}/>favourite
+        </Button>
+        <Button isActive={activeBtn === 'all coins'} onClick={() => setActiveBtn('all coins')}>all coins</Button>
+      </div>
+      <ul className={cn(styles.list)}>
+        {displayedList.map((coin) => (
+          <li key={coin} className={styles.listItem} onClick={() => toggleFavourite(coin)}>
+            {favourites[coin] ? <StarFilledIcon/> : <StarIcon/>}
+            {coin}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+
+  const dropdownRoot = document.getElementById('dropdown-root');
+
 
   return (
     <label ref={searchBarRef} className={cn(className, styles.searchbar, {[styles.activeSearchbar]: isActive})}>
@@ -64,22 +93,7 @@ export const SearchBar = ({coins, onSearch, className, ...props}: SearchbarProps
         {...props}
       />
       <SearchIcon className={styles.icon} onClick={onClickHandler}/>
-      <div className={cn(styles.listContainer, {[styles.activeListContainer]: isActive})}>
-        <div className={styles.buttonsContainer}>
-          <Button isActive={activeBtn === 'favourite'} onClick={() => setActiveBtn('favourite')}>
-            <StarFilledIcon className={cn(styles.starIcon, {[styles.activeStarIcon]: activeBtn === 'favourite'})}/>favourite
-          </Button>
-          <Button isActive={activeBtn === 'all coins'} onClick={() => setActiveBtn('all coins')}>all coins</Button>
-        </div>
-        <ul className={cn(styles.list)}>
-          {displayedList.map((coin) => (
-            <li key={coin} className={styles.listItem} onClick={() => toggleFavourite(coin)}>
-              {favourites[coin] ? <StarFilledIcon/> : <StarIcon/>}
-              {coin}
-            </li>
-          ))}
-        </ul>
-      </div>
+      {isActive && dropdownRoot && createPortal(dropdownContent, dropdownRoot)}
     </label>
   );
 };
